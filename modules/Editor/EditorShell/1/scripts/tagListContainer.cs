@@ -1,68 +1,25 @@
 //-----------------------------------------------------------------------------
 // Copyright (c) 2013 Developer
+//
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to
+// deal in the Software without restriction, including without limitation the
+// rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
+// sell copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+// FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
+// IN THE SOFTWARE.
 //-----------------------------------------------------------------------------
 
-//-----------------------------------------------------------------------------
-/*
-Copy and paste this set of controls into your tool to assure a standardized look.
-
-Remember to change the name, tool, adjust location and size of the inner GuiControl.
-*/
-//-----------------------------------------------------------------------------
-/*
-<GuiControl
-    canSaveDynamicFields="0"
-    isContainer="1"
-    Profile="GuiTextEditProfile"
-    HorizSizing="right"
-    VertSizing="bottom"
-    Position="3 30"
-    Extent="216 115"
-    MinExtent="8 2"
-    canSave="1"
-    Visible="1"
-    Active="0"
-    tooltipprofile="GuiDefaultProfile"
-    hovertime="1000">
-    <GuiScrollCtrl
-        canSaveDynamicFields="0"
-        isContainer="1"
-        Profile="GuiScrollProfile"
-        HorizSizing="right"
-        VertSizing="bottom"
-        Position="3 3"
-        Extent="211 109"
-        MinExtent="8 2"
-        canSave="1"
-        Visible="1"
-        Active="0"
-        tooltipprofile="GuiDefaultProfile"
-        hovertime="1000"
-        willFirstRespond="1"
-        hScrollBar="alwaysOff"
-        vScrollBar="alwaysOn"
-        constantThumbHeight="0"
-        childMargin="0 2">
-        <GuiControl
-            Name="ABTagContainer"
-            class="TagListContainer"
-            canSaveDynamicFields="0"
-            isContainer="1"
-            Profile="GuiTransparentProfile"
-            HorizSizing="left"
-            VertSizing="top"
-            Position="0 0"
-            Extent="211 109"
-            MinExtent="8 2"
-            canSave="1"
-            Visible="1"
-            Active="0"
-            tooltipprofile="GuiDefaultProfile"
-            hovertime="1000"
-            tool="AnimationBuilderGui" />
-    </GuiScrollCtrl>
-</GuiControl>
-*/
 function TagListContainer::onAdd(%this)
 {
     // create our list of tags for the current object
@@ -73,6 +30,8 @@ function TagListContainer::onAdd(%this)
     
 }
 
+//-----------------------------------------------------------------------------
+
 function TagListContainer::clearTagItemList(%this)
 {
     if ( !isObject(%this.tagItemList) )
@@ -81,6 +40,8 @@ function TagListContainer::clearTagItemList(%this)
     while (%this.tagItemList.getCount())
         %this.tagItemList.getObject(0).delete();
 }
+
+//-----------------------------------------------------------------------------
 
 function TagListContainer::populateTagList(%this, %assetID)
 {
@@ -139,6 +100,8 @@ function TagListContainer::populateTagList(%this, %assetID)
     }
 }
 
+//-----------------------------------------------------------------------------
+
 function TagListContainer::removeTagItem(%this, %tagName)
 {
     if (%tagName $= "")
@@ -156,6 +119,8 @@ function TagListContainer::removeTagItem(%this, %tagName)
     }
 }
 
+//-----------------------------------------------------------------------------
+
 function TagListContainer::addTagItem(%this, %tagName)
 {
     if (%tagName $= "")
@@ -167,16 +132,22 @@ function TagListContainer::addTagItem(%this, %tagName)
     %this.tagItemList.add(%tagButton);
 }
 
+//-----------------------------------------------------------------------------
+
 function TagListContainer::getTagCount(%this)
 {
     return %this.tagItemList.getCount();
 }
+
+//-----------------------------------------------------------------------------
 
 function TagListContainer::getTagName(%this, %index)
 {
     if (%index >= 0 && %index < %this.tagList.getCount())
         return %this.tagItemList.getObject(%index).tagText;
 }
+
+//-----------------------------------------------------------------------------
 
 function TagListContainer::createTagButton(%this, %index, %tagName)
 {
@@ -248,6 +219,8 @@ function TagListContainer::createTagButton(%this, %index, %tagName)
 
     return %control;
 }
+
+//-----------------------------------------------------------------------------
 
 function DeleteTagButton::onClick(%this)
 {

@@ -167,20 +167,13 @@ function MenuBuilder::onSelectItem(%this, %id, %text)
     return false;
 }
 
-//-----------------------------------------------------------------------------
-/// (SimID this)
-/// Wraps the attachToMenuBar call so that it does not require knowledge of
-/// barName or barIndex to be removed/attached.  This makes the individual 
-/// MenuBuilder items very easy to add and remove dynamically from a bar.
-///
-function MenuBuilder::attachToMenuBar( %this )
+function MenuBuilder::attachToMenuBar(%this)
 {
     if (%this.barName $= "")
     {
         error("MenuBuilder::attachToMenuBar - Menu property 'barName' not specified!");
-        return false;
     }
-
+    
     if (%this.barPosition < 0)
     {
         error("MenuBuilder::attachToMenuBar - Menu " SPC %this.barName SPC "property 'barPosition' is invalid, must be greater than 0!");

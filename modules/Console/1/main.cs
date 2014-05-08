@@ -20,32 +20,21 @@
 // IN THE SOFTWARE.
 //-----------------------------------------------------------------------------
 
-function AppCore::create( %this )
-{
-    // Load system scripts
-    exec("./scripts/constants.cs");
-    exec("./scripts/defaultPreferences.cs");
-    exec("./scripts/canvas.cs");
-    exec("./scripts/openal.cs");
-    exec("./gui/guiProfiles.cs");
-    
-    // Initialize the canvas
-    initializeCanvas("Torque 2D");
-    
-    // Set the canvas color
-    Canvas.BackgroundColor = "CornflowerBlue";
-    Canvas.UseBackgroundColor = true;
-    
-    // Initialize audio
-    initializeOpenAL();
-    
-    ModuleDatabase.loadGroup("Editor");
+function Console::create( %this )
+{        
+    // Load scripts.
+    exec( "./scripts/console.cs" );
+        
+    // Load GUI profiles.
+    exec("./gui/consoleProfile.cs");
+
+    // Load and configure the console.
+    Console.add( TamlRead("./gui/ConsoleDialog.gui.taml") );
+    GlobalActionMap.bind( keyboard, "ctrl tilde", toggleConsole );
 }
 
 //-----------------------------------------------------------------------------
 
-function AppCore::destroy( %this )
-{
-
+function Console::destroy( %this )
+{    
 }
-

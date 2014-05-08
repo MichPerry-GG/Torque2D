@@ -20,8 +20,8 @@
 // IN THE SOFTWARE.
 //-----------------------------------------------------------------------------
 
-#ifndef _SKELETONOBJECT_H_
-#define _SKELETONOBJECT_H_
+#ifndef _SKELETON_OBJECT_H_
+#define _SKELETON_OBJECT_H_
 
 #ifndef _SPRITE_BATCH_H_
 #include "2d/core/SpriteBatch.h"
@@ -158,4 +158,4 @@ protected:
     static bool writeFlipY( void* obj, StringTableEntry pFieldName )             { return static_cast<SkeletonObject*>(obj)->getFlipY() == true; }
 };
 
-#endif // _SKELETONOBJECT_H_
+#endif // _SKELETON_OBJECT_H_

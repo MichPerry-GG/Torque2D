@@ -20,25 +20,25 @@
 // IN THE SOFTWARE.
 //-----------------------------------------------------------------------------
 
-#ifndef _SKELETONOBJECT_H_
+#ifndef _SKELETON_OBJECT_H_
 #include "2d/sceneobject/SkeletonObject.h"
 #endif
 
 #include "spine/extension.h"
 
 // Script bindings.
-#include "2d/sceneobject/Skeleton_ScriptBinding.h"
+#include "2d/sceneobject/SkeletonObject_ScriptBinding.h"
 
 //-----------------------------------------------------------------------------
 
-//void _spAtlasPage_createTexture (spAtlasPage* self, const char* path) {
-//}
-//void _spAtlasPage_disposeTexture (spAtlasPage* self) {
-//}
-//
-//char* _spUtil_readFile (const char* path, int* length) {
-//    return _readFile(path, length);
-//}
+/*void _spAtlasPage_createTexture (spAtlasPage* self, const char* path) {
+}
+void _spAtlasPage_disposeTexture (spAtlasPage* self) {
+}
+
+char* _spUtil_readFile (const char* path, int* length) {
+    return _readFile(path, length);
+}*/
 
 //-----------------------------------------------------------------------------
 
@@ -46,18 +46,18 @@ IMPLEMENT_CONOBJECT(SkeletonObject);
 
 //------------------------------------------------------------------------------
 
-SkeletonObject::SkeletonObject() :      mPreTickTime( 0.0f ),
-                            mPostTickTime( 0.0f ),
-                            mTimeScale(1),
-                            mLastFrameTime(0),
-                            mTotalAnimationTime(0),
-                            mSkeleton(NULL),
-                            mState(NULL),
-                            mAnimationCycle(false),
-                            mAnimationFinished(true),
-                            mAnimationDuration(0.0),
-                            mFlipX(false),
-                            mFlipY(false)
+SkeletonObject::SkeletonObject() :  mPreTickTime( 0.0f ),
+                                    mPostTickTime( 0.0f ),
+                                    mTimeScale(1),
+                                    mLastFrameTime(0),
+                                    mTotalAnimationTime(0),
+                                    mSkeleton(NULL),
+                                    mState(NULL),
+                                    mAnimationCycle(false),
+                                    mAnimationFinished(true),
+                                    mAnimationDuration(0.0),
+                                    mFlipX(false),
+                                    mFlipY(false)
 {
     mCurrentAnimation = StringTable->insert("");
     mSkeletonScale.SetZero();
@@ -168,7 +168,7 @@ void SkeletonObject::copyTo(SimObject* object)
     SkeletonObject* pComposite = dynamic_cast<SkeletonObject*>(object);
     
     // Sanity!
-    AssertFatal(pComposite != NULL, "Skeleton::copyTo() - Object is not the correct type.");
+    AssertFatal(pComposite != NULL, "SkeletonObject::copyTo() - Object is not the correct type.");
     
     // Copy state.
     pComposite->setSkeletonAsset( getSkeletonAsset() );
@@ -236,19 +236,19 @@ bool SkeletonObject::setMix( const char* pFromAnimation, const char* pToAnimatio
 {
     if (mSkeletonAsset.isNull())
     {
-        Con::warnf("Skeleton::setMix() - Cannot mix. No asset assigned");
+        Con::warnf("SkeletonObject::setMix() - Cannot mix. No asset assigned");
         return false;
     }
     
     // Check for valid animation state data
-    AssertFatal( mSkeletonAsset->mStateData != NULL, "Skeleton::setMix() - Animation state data invalid" );
+    AssertFatal( mSkeletonAsset->mStateData != NULL, "SkeletonObject::setMix() - Animation state data invalid" );
     
     // Check to see if the "from animation" is valid
     spAnimation* from = spSkeletonData_findAnimation(mSkeleton->data, pFromAnimation);
     
     if (!from)
     {
-        Con::warnf("Skeleton::setMix() - Animation %s does not exist.", pFromAnimation);
+        Con::warnf("SkeletonObject::setMix() - Animation %s does not exist.", pFromAnimation);
         return false;
     }
     
@@ -257,14 +257,14 @@ bool SkeletonObject::setMix( const char* pFromAnimation, const char* pToAnimatio
     
     if (!to)
     {
-        Con::warnf("Skeleton::setMix() - Animation %s does not exist.", pToAnimation);
+        Con::warnf("SkeletonObject::setMix() - Animation %s does not exist.", pToAnimation);
         return false;
     }
     
     // Check to see if a valid mix time was passsed
     if (time < 0.0f)
     {
-        Con::warnf("Skeleton::setMix() - Invalid time set, %f", time);
+        Con::warnf("SkeletonObject::setMix() - Invalid time set, %f", time);
         return false;
     }
     
@@ -278,7 +278,7 @@ bool SkeletonObject::setCurrentSkin( const char* pSkin )
 {
     if (mSkeletonAsset.isNull() || !mSkeleton)
     {
-        Con::errorf("Skeleton::setCurrentSkin() - Skeleton Asset was null or skeleton was not built");
+        Con::errorf("SkeletonObject::setCurrentSkin() - Skeleton Asset was null or skeleton was not built");
         return false;
     }
     
@@ -291,7 +291,7 @@ bool SkeletonObject::setCurrentSkin( const char* pSkin )
     }
     else
     {
-        Con::errorf("Skeleton::setCurrentSkin() - Skin %s not found", pSkin);
+        Con::errorf("SkeletonObject::setCurrentSkin() - Skin %s not found", pSkin);
         return false;
     }
 }
@@ -345,7 +345,7 @@ void SkeletonObject::generateComposition( void )
     // Generate visualization.
     if ((*mSkeletonAsset).mImageAsset.isNull())
     {
-        Con::warnf( "Skeleton::generateComposition() - Image asset was NULL, so nothing can be added to the composition.");
+        Con::warnf( "SkeletonObject::generateComposition() - Image asset was NULL, so nothing can be added to the composition.");
         return;
     }
     
@@ -416,6 +416,8 @@ void SkeletonObject::updateComposition( const F32 time )
         spRegionAttachment_computeWorldVertices(regionAttachment, slot->skeleton->x, slot->skeleton->y, slot->bone, vertexPositions);
         
         SpriteBatchItem* pSprite = SpriteBatch::createSprite();
+
+        pSprite->setDepth(mSceneLayerDepth);
         
         pSprite->setSrcBlendFactor(mSrcBlendFactor);
         pSprite->setDstBlendFactor(mDstBlendFactor);
@@ -447,7 +449,7 @@ void SkeletonObject::updateComposition( const F32 time )
         pSprite->setExplicitVertices(vertices);
         
         pSprite->setImage(assetId);
-        pSprite->setImageFrameByName(attachment->name);
+        pSprite->setNamedImageFrame(attachment->name);
     }
     
     if (mLastFrameTime >= mTotalAnimationTime)

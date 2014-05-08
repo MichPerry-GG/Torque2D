@@ -3078,7 +3078,7 @@
     <ClInclude Include="..\..\source\input\leapMotion\leapMotionUtil.h">
       <Filter>input\leapMotion</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\source\2d\sceneobject\Skeleton_ScriptBinding.h">
+    <ClInclude Include="..\..\source\2d\sceneobject\SkeletonObject_ScriptBinding.h">
       <Filter>2d\sceneobject</Filter>
     </ClInclude>
     <ClInclude Include="..\..\source\2d\sceneobject\SkeletonObject.h">

@@ -41,6 +41,7 @@ function ConfirmDeleteGui::onDialogPush(%this)
 {
     %arg = getWord(%this.data, 0);
     %declaredAsset = AssetDatabase.isDeclaredAsset(%arg);
+    
     if (%declaredAsset)
     {
         %tempAsset = AssetDatabase.acquireAsset(%arg);
@@ -51,6 +52,7 @@ function ConfirmDeleteGui::onDialogPush(%this)
 
         %query = new AssetQuery();
         %depCount = AssetDatabase.findAssetIsDependedOn(%query, %arg);
+        
         if (%depCount > 0)
         {
             for (%i = 0; %i < %depCount; %i++)
@@ -66,6 +68,7 @@ function ConfirmDeleteGui::onDialogPush(%this)
                 DeletePromptDependencyList.add(%depItem);
             }
         }
+        
         AssetDatabase.releaseAsset(%arg);
     }
     else
@@ -80,6 +83,7 @@ function DependencyListContainer::add(%this, %item)
     %count = %this.getCount();
     %itemHeight = %item.Extent.y;
     %item.Position = "0" SPC (%count * %itemHeight);
+    
     %this.addGuiControl(%item);
     %this.resize(0, 0, 266, (%count + 1) * %itemHeight);
 }
@@ -87,6 +91,7 @@ function DependencyListContainer::add(%this, %item)
 function DependencyListContainer::clear(%this)
 {
     %count = %this.getCount();
+    
     for (%i = 0; %i < %count; %i++)
     {
         %obj = %this.getObject(0);
@@ -148,13 +153,16 @@ function DependencyListContainer::createDependencyItem(%this, %name, %type)
         text=%type;
         maxLength="1024";
     };
+    
     %control.addGuiControl(%itemType);
+
     return %control;
 }
 
 function DeleteOKBtn::onClick(%this)
 {
     %object = ConfirmDeleteGui.object;
+    
     if (%object.isMethod(ConfirmDeleteGui.handler))
     {
         %argCount = getWordCount(ConfirmDeleteGui.data);
@@ -162,6 +170,7 @@ function DeleteOKBtn::onClick(%this)
         {
             %argList[%i] = getWord(ConfirmDeleteGui.data, %i);
         }
+        
         switch(%argCount)
         {
             case 0:
@@ -184,6 +193,7 @@ function DeleteOKBtn::onClick(%this)
                 %object.call(ConfirmDeleteGui.handler, %argList[0], %argList[1], %argList[2], %argList[3], %argList[4], %argList[5], %argList[6], %argList[7]);
         }
     }
+    
     ConfirmDeleteGui.object = "";
     ConfirmDeleteGui.handler = "";
     ConfirmDeleteGui.data = "";

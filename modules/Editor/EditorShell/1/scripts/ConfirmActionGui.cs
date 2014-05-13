@@ -46,10 +46,12 @@ function ConfirmActionGui::onDialogPush(%this)
 function ActionOKBtn::onClick(%this)
 {
     %object = ConfirmActionGui.object;
+    
     if (%object.isMethod(ConfirmActionGui.handler))
     {
         %object.call(ConfirmActionGui.handler, ConfirmActionGui.data);
     }
+
     ConfirmActionGui.object = "";
     ConfirmActionGui.handler = "";
     ConfirmActionGui.data = "";

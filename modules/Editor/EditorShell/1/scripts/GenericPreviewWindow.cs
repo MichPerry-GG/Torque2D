@@ -36,15 +36,14 @@
 /// @param this The GenericPreviewWindow.
 function GenericPreviewWindow::onAdd(%this)
 {
-   Assert(%this.getClassName() $= "SceneWindow",
-             "GenericPreviewWindow::onAdd - This is not a SceneWindow!");
-   
-   %this.scene = new Scene();
-   %this.baseDimension = 100;
-   %this.resource = "";
-   %this.frame = 0;
-   
-   %this.setScene(%this.scene);
+    Assert(%this.getClassName() $= "SceneWindow", "GenericPreviewWindow::onAdd - This is not a SceneWindow!");
+
+    %this.scene = new Scene();
+    %this.baseDimension = 100;
+    %this.resource = "";
+    %this.frame = 0;
+
+    %this.setScene(%this.scene);
 }
 
 /// void(GenericPreviewWindow this)
@@ -52,11 +51,11 @@ function GenericPreviewWindow::onAdd(%this)
 /// @param this The GenericPreviewWindow.
 function GenericPreviewWindow::onRemove(%this)
 {
-   if (isObject(%this.scene))
-      %this.scene.delete();
-      
-   if (isObject(%this.sprite))
-      %this.sprite.delete();
+    if (isObject(%this.scene))
+        %this.scene.delete();
+
+    if (isObject(%this.sprite))
+        %this.sprite.delete();
 }
 
 /// void(GenericPreviewWindow this)
@@ -65,7 +64,7 @@ function GenericPreviewWindow::onRemove(%this)
 /// @param this The GenericPreviewWindow.
 function GenericPreviewWindow::onWake(%this)
 {
-   %this.onExtentChange(%this.position SPC %this.extent);
+    %this.onExtentChange(%this.position SPC %this.extent);
 }
 
 /// void(GenericPreviewWindow this, RectF newDimensions)
@@ -74,14 +73,14 @@ function GenericPreviewWindow::onWake(%this)
 /// @param newDimensions The new position and size of the window.
 function GenericPreviewWindow::onExtentChange(%this, %newDimensions)
 {
-   %width = getWord(%newDimensions, 2);
-   %height = getWord(%newDimensions, 3);
-   
-   %dimensions = resolveAspectRatio(%width / %height, %this.baseDimension);
-   %cameraWidth = getWord(%dimensions, 0);
-   %cameraHeight = getWord(%dimensions, 1);
-   
-   %this.setCurrentCameraPosition(0, 0, %cameraWidth, %cameraHeight);
+    %width = getWord(%newDimensions, 2);
+    %height = getWord(%newDimensions, 3);
+
+    %dimensions = resolveAspectRatio(%width / %height, %this.baseDimension);
+    %cameraWidth = getWord(%dimensions, 0);
+    %cameraHeight = getWord(%dimensions, 1);
+
+    %this.setCurrentCameraPosition(0, 0, %cameraWidth, %cameraHeight);
 }
 
 /// void(GenericPreviewWindow this, ImageAsset imageAsset)
@@ -90,12 +89,12 @@ function GenericPreviewWindow::onExtentChange(%this, %newDimensions)
 /// @param animation The animation to display.
 function GenericPreviewWindow::display(%this, %resource, %type)
 {  
-   if (isObject(%this.sprite))
-      %this.sprite.delete();
-      
-   %this.resource = %resource;
-   %this.objectType = %type;
-   %this.update();
+    if (isObject(%this.sprite))
+        %this.sprite.delete();
+
+    %this.resource = %resource;
+    %this.objectType = %type;
+    %this.update();
 }
 
 /// void(GenericPreviewWindow this)
@@ -103,8 +102,8 @@ function GenericPreviewWindow::display(%this, %resource, %type)
 /// @param this The GenericPreviewWindow.
 function GenericPreviewWindow::clear(%this)
 {
-   %this.resource = "";
-   %this.update();
+    %this.resource = "";
+    %this.update();
 }
 
 /// void(GenericPreviewWindow this)
@@ -114,57 +113,57 @@ function GenericPreviewWindow::clear(%this)
 /// non-square animations.
 function GenericPreviewWindow::update(%this)
 {
-   if (!isObject(%this.resource))
-   {
-      if (isObject(%this.sprite))
-         %this.sprite.setVisible(false);
-      
-      return;
-   }
+    if (!isObject(%this.resource))
+    {
+        if (isObject(%this.sprite))
+            %this.sprite.setVisible(false);
+
+        return;
+    }
+
+    if(isObject(%this.Sprite))
+        %this.sprite.setVisible(true);
    
-   if(isObject(%this.Sprite))
-      %this.sprite.setVisible(true);
+    switch$(%this.objectType)
+    {
+        case "t2dStaticSprite":
+            %this.sprite = new t2dStaticSprite ();
+            %this.sprite.scene = %this.scene;
+            %size = %this.resource.getFrameSize(0);
+            %this.sprite.setImageAsset(%this.resource);
+            %this.sprite.setFrame(%this.frame);
+
+        case "t2dAnimatedSprite":
+            %this.sprite = new t2dAnimatedSprite();
+            %this.sprite.scene = %this.scene;
+            %size = %this.resource.ImageAsset.getFrameSize(0);
+            %this.sprite.playAnimation(%this.resource);
+
+        case "BitmapFontObject":
+            %this.sprite = new BitmapFontObject();
+            %this.sprite.scene = %this.scene;
+            %this.sprite.setImageAsset(%this.resource);
+            %size = %this.resource.getFrameSize(0);
+    }
    
-   switch$(%this.objectType)
-   {
-      case "t2dStaticSprite":
-         %this.sprite = new t2dStaticSprite ();
-         %this.sprite.scene = %this.scene;
-         %size = %this.resource.getFrameSize(0);
-         %this.sprite.setImageAsset(%this.resource);
-         %this.sprite.setFrame(%this.frame);
-         
-      case "t2dAnimatedSprite":
-         %this.sprite = new t2dAnimatedSprite();
-         %this.sprite.scene = %this.scene;
-         %size = %this.resource.ImageAsset.getFrameSize(0);
-         %this.sprite.playAnimation(%this.resource);
-         
-      case "BitmapFontObject":
-         %this.sprite = new BitmapFontObject();
-         %this.sprite.scene = %this.scene;
-         %this.sprite.setImageAsset(%this.resource);
-         %size = %this.resource.getFrameSize(0);
-   }
-   
-   %width = getWord(%size, 0);
-   %height = getWord(%size, 1);
-   
-   // Camera size.
-   %cameraSize = %this.getCurrentCameraSize();
-   %cameraWidth = getWord(%cameraSize, 0);
-   %cameraHeight = getWord(%cameraSize, 1);
-   
-   // Determine the amount to scale the sprite so it fills the camera.
-   %widthScale = %cameraWidth / %width;
-   %heightScale = %cameraHeight / %height;
-   %scale = %widthScale < %heightScale ? %widthScale : %heightScale;
-   
-   %width *= %scale;
-   %height *= %scale;
-   
-   if(%this.objectType !$= "BitmapFontObject")
-      %this.sprite.size = %width SPC %height;
+    %width = getWord(%size, 0);
+    %height = getWord(%size, 1);
+
+    // Camera size.
+    %cameraSize = %this.getCurrentCameraSize();
+    %cameraWidth = getWord(%cameraSize, 0);
+    %cameraHeight = getWord(%cameraSize, 1);
+
+    // Determine the amount to scale the sprite so it fills the camera.
+    %widthScale = %cameraWidth / %width;
+    %heightScale = %cameraHeight / %height;
+    %scale = %widthScale < %heightScale ? %widthScale : %heightScale;
+
+    %width *= %scale;
+    %height *= %scale;
+
+    if(%this.objectType !$= "BitmapFontObject")
+        %this.sprite.size = %width SPC %height;
 }
 
 /// void(GenericPreviewWindow this)
@@ -172,11 +171,11 @@ function GenericPreviewWindow::update(%this)
 /// @param this The AnimationPreviewWindow.
 function GenericPreviewWindow::pause(%this)
 {
-   if (isObject(%this.sprite.getAnimation()))
-   {
-      %this.sprite.pauseAnimation(true);
-      %this.sprite.paused = true;
-   }
+    if (isObject(%this.sprite.getAnimation()))
+    {
+        %this.sprite.pauseAnimation(true);
+        %this.sprite.paused = true;
+    }
 }
 
 /// void(GenericPreviewWindow this)

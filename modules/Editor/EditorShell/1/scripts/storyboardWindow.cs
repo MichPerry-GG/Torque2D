@@ -22,22 +22,22 @@
 
 function StoryboardWindow::onAdd(%this)
 {
-   %this.scene = new Scene();
-   %this.staticSpriteGroup = new SimGroup();
-   %this.height = 10;
-   
-   %this.setScene(%this.scene);
-   //%this.scene.setDebugOn(0);
-   %this.UseObjectInputEvents = true;
+    %this.scene = new Scene();
+    %this.staticSpriteGroup = new SimGroup();
+    %this.height = 10;
+
+    %this.setScene(%this.scene);
+
+    %this.UseObjectInputEvents = true;
 }
 
 function StoryboardWindow::onRemove(%this)
 {
-   if (isObject(%this.scene))
-      %this.scene.delete();
-      
-   if (isObject(%this.staticSpriteGroup))
-      %this.staticSpriteGroup.delete();
+    if (isObject(%this.scene))
+        %this.scene.delete();
+
+    if (isObject(%this.staticSpriteGroup))
+        %this.staticSpriteGroup.delete();
 }
 
 function ImageMapStoryboardWindow::update(%this, %imageMapAssetId, %frames)

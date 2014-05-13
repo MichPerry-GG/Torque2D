@@ -45,12 +45,9 @@ function MessageBoxTests::buildMenu(%this)
 
         item[0] = "OK" TAB "" TAB "MessageBoxTests.showOK();";
         item[1] = "OK Cancel" TAB "" TAB "MessageBoxTests.showOKCancel();";
-        item[2] = "OK Cancel Details" TAB "" TAB "MessageBoxTests.showOKCancelDetails();";
-        item[3] = "Confirm" TAB "" TAB "MessageBoxTests.showConfirm();";
-        item[4] = "Confirm Action" TAB "" TAB "MessageBoxTests.showConfirmAction();";        
-        item[5] = "Confirm Delete" TAB "" TAB "MessageBoxTests.showConfirmDelete();";
-        item[6] = "Confirm Overwrite" TAB "" TAB "MessageBoxTests.showConfirmOverwrite();";
-        item[7] = "Warning" TAB "" TAB "MessageBoxTests.showWarning();";
+        item[2] = "Confirm Action" TAB "" TAB "MessageBoxTests.showConfirmAction();";        
+        item[3] = "Confirm Delete" TAB "" TAB "MessageBoxTests.showConfirmDelete();";
+        item[4] = "Confirm Overwrite" TAB "" TAB "MessageBoxTests.showConfirmOverwrite();";        
     };
     
     EditorShell.addMenu(%menu);
@@ -60,7 +57,8 @@ function MessageBoxTests::buildMenu(%this)
 
 function MessageBoxTests::showOK(%this)
 {
-    MessageBoxOK("Show OK", "This is an OK Box", "");
+    //MessageBoxOK("Show OK", "This is an OK Box", "");        
+    NoticeGui.display("This is a display");
 }
 
 //-----------------------------------------------------------------------------
@@ -68,20 +66,6 @@ function MessageBoxTests::showOK(%this)
 function MessageBoxTests::showOKCancel(%this)
 {
     MessageBoxOKCancel("Show OK Cancel", "Ok or Cancel?", "", "");
-}
-
-//-----------------------------------------------------------------------------
-
-function MessageBoxTests::showOKCancelDetails(%this)
-{
-    MessageBoxOKCancelDetails("Ok Cancel Details", "This is the message", "This are the details", "", "");
-}
-
-//-----------------------------------------------------------------------------
-
-function MessageBoxTests::showConfirm(%this)
-{
-    ConfirmDialog.setupAndShow("500 400", "Do something?", "Do", "", "Don't", "", "Cancel", "");
 }
 
 //-----------------------------------------------------------------------------
@@ -103,11 +87,4 @@ function MessageBoxTests::showConfirmDelete(%this)
 function MessageBoxTests::showConfirmOverwrite(%this)
 {
     ConfirmOverwriteGui.display("Confirm overwrite?", %this, "", "");
-}
-
-//-----------------------------------------------------------------------------
-
-function MessageBoxTests::showWarning(%this)
-{
-    WarningDialog.setupAndShow("500, 400", "Warning!", "Go!", "", "Wait!", "", "Never mind", "");
 }

@@ -47,19 +47,18 @@
 /// @param this The ImageAssetPreviewWindow.
 function ImageAssetPreviewWindow::onAdd(%this)
 {
-   Assert(%this.getClassName() $= "SceneWindow",
-             "ImageAssetPreviewWindow::onAdd - This is not a SceneWindow!");
-   
-   %this.scene = new Scene();
-   %this.staticSpriteGroup = new SimGroup();
-   %this.spacing = 2;
-   %this.baseDimension = 100;
-   %this.imageAsset = "";
-   %this.UseObjectInputEvents = true;
-   %this.UseWindowInputEvents = true;
-   %this.spriteClass = "";
-   
-   %this.setScene(%this.scene);
+    Assert(%this.getClassName() $= "SceneWindow", "ImageAssetPreviewWindow::onAdd - This is not a SceneWindow!");
+
+    %this.scene = new Scene();
+    %this.staticSpriteGroup = new SimGroup();
+    %this.spacing = 2;
+    %this.baseDimension = 100;
+    %this.imageAsset = "";
+    %this.UseObjectInputEvents = true;
+    %this.UseWindowInputEvents = true;
+    %this.spriteClass = "";
+
+    %this.setScene(%this.scene);
 }
 
 /// void(ImageAssetPreviewWindow this)
@@ -69,12 +68,12 @@ function ImageAssetPreviewWindow::onRemove(%this)
 {
     if (isObject(%this.imageAsset))
         AssetDatabase.releaseAsset(%this.imageAsset);
-   
-   if (isObject(%this.scene))
-      %this.scene.delete();
-      
-   if (isObject(%this.staticSpriteGroup))
-      %this.staticSpriteGroup.delete();
+
+    if (isObject(%this.scene))
+        %this.scene.delete();
+
+    if (isObject(%this.staticSpriteGroup))
+        %this.staticSpriteGroup.delete();
 }
 
 /// void(ImageAssetPreviewWindow this)
@@ -83,8 +82,8 @@ function ImageAssetPreviewWindow::onRemove(%this)
 /// @param this The ImageAssetPreviewWindow.
 function ImageAssetPreviewWindow::onWake(%this)
 {
-   // rdbnote: this doesn't actually do anything because we don't have an image
-   %this.updateSize();
+    // rdbnote: this doesn't actually do anything because we don't have an image
+    %this.updateSize();
 }
 
 /// void(ImageAssetPreviewWindow this, RectF newDimensions)
@@ -93,7 +92,7 @@ function ImageAssetPreviewWindow::onWake(%this)
 /// @param newDimensions The new position and size of the window.
 function ImageAssetPreviewWindow::onExtentChange(%this, %newDimensions)
 {
-   %this.updateSize();
+    %this.updateSize();
 }
 
 /// void(ImageAssetPreviewWindow this, ImageAsset imageAsset)
@@ -102,11 +101,11 @@ function ImageAssetPreviewWindow::onExtentChange(%this, %newDimensions)
 /// @param imageAsset The image asset to display.
 function ImageAssetPreviewWindow::display(%this, %imageAsset)
 {
-   Assert(AssetDatabase.isDeclaredAsset(%imageAsset), "ImageAssetPreviewWindow::display - Object is not a valid image asset!");
-   
-   %this.assetId = %imageAsset;
-   %this.imageAsset = AssetDatabase.acquireAsset(%imageAsset);
-   %this.update();
+    Assert(AssetDatabase.isDeclaredAsset(%imageAsset), "ImageAssetPreviewWindow::display - Object is not a valid image asset!");
+
+    %this.assetId = %imageAsset;
+    %this.imageAsset = AssetDatabase.acquireAsset(%imageAsset);
+    %this.update();
 }
 
 /// void(ImageAssetPreviewWindow this)
@@ -114,8 +113,8 @@ function ImageAssetPreviewWindow::display(%this, %imageAsset)
 /// @param this The ImageAssetPreviewWindow.
 function ImageAssetPreviewWindow::clear(%this)
 {
-   %this.imageAsset = "";
-   %this.update();
+    %this.imageAsset = "";
+    %this.update();
 }
 
 /// void(ImageAssetPreviewWindow this)
@@ -126,102 +125,104 @@ function ImageAssetPreviewWindow::clear(%this)
 /// non-square image assets.
 function ImageAssetPreviewWindow::update(%this)
 {
-   // Clear out the old stuff.
-   %this.staticSpriteGroup.deleteContents();
+    // Clear out the old stuff.
+    %this.staticSpriteGroup.deleteContents();
+
+    %imageAsset = %this.imageAsset;
+    %scene = %this.scene;
+
+    // Nothing doing if we don't have an image.
+    if (!isObject(%imageAsset))
+        return;
+
+    // because we need to make sure the camera size is right
+    %this.updateSize();
+
+    %scene.setDebugOn(2, 3);
    
-   %imageAsset = %this.imageAsset;
-   %scene = %this.scene;
+    %cameraSize = %this.getCurrentCameraSize();
+    %maxWidth = getWord(%cameraSize, 0) - 1;
+    %maxHeight = getWord(%cameraSize, 1) - 1;
    
-   // Nothing doing if we don't have an image.
-   if (!isObject(%imageAsset))
-      return;
-      
-   // because we need to make sure the camera size is right
-   %this.updateSize();
-   
-  %scene.setDebugOn(2, 3);
-   
-   %cameraSize = %this.getCurrentCameraSize();
-   %maxWidth = getWord(%cameraSize, 0) - 1;
-   %maxHeight = getWord(%cameraSize, 1) - 1;
-   
-  %baseX = 0;
-  %baseY = 0;
-  %frameCount = %imageAsset.getFrameCount();
+    %baseX = 0;
+    %baseY = 0;
+    %frameCount = %imageAsset.getFrameCount();
   
-  %sqrt = mSqrt(%frameCount);
-  %div = mCeil(%sqrt);
-  
-  %rowSpace = (%maxWidth / %div) * 0.05;
-  %colSpace = (%maxHeight / %div) * 0.05;
-  if (%rowSpace < 1.5)
-     %rowSpace = 1.5;
-  if (%colSpace < 1.5)
-     %colSpace = 1.5;
+    %sqrt = mSqrt(%frameCount);
+    %div = mCeil(%sqrt);
+
+    %rowSpace = (%maxWidth / %div) * 0.05;
+    %colSpace = (%maxHeight / %div) * 0.05;
+    
+    if (%rowSpace < 1.5)
+        %rowSpace = 1.5;
+        
+    if (%colSpace < 1.5)
+        %colSpace = 1.5;
      
-  %objWidth = (%maxWidth / %div) - (%rowSpace + %this.spacing);
-  %objHeight = (%maxHeight / %div) - (%colSpace + %this.spacing);
+    %objWidth = (%maxWidth / %div) - (%rowSpace + %this.spacing);
+    %objHeight = (%maxHeight / %div) - (%colSpace + %this.spacing);
+
+    %baseX += %this.spacing;
+    %baseY += %this.spacing;
+
+    %posX = %baseX - (%maxWidth / 2) + (%objWidth / 2);
+    %posY = %baseY - (%maxHeight / 2) + (%objHeight / 2);
+
+    %rowCount = 0;
+    %colCount = 0;
   
-  %baseX += %this.spacing;
-  %baseY += %this.spacing;
-  
-  %posX = %baseX - (%maxWidth / 2) + (%objWidth / 2);
-  %posY = %baseY - (%maxHeight / 2) + (%objHeight / 2);
-  
-  %rowCount = 0;
-  %colCount = 0;
-  
-  for (%i = 0; %i < %frameCount; %i++)
-  {
-     %sprite = new sprite()
-     {
-        class = %this.spriteClass;
-        superClass = ImageAssetPreviewSprite;
-        scene = %scene;
-        UseInputEvents = true;
-        window = %this;
-        tooltipprofile="GuiToolTipProfile";
-        ToolTip="Each frame is displayed in order from left to right starting in the top left corner. You can drag and drop individual frames to the Animation Timeline.";
-     };
+    for (%i = 0; %i < %frameCount; %i++)
+    {
+        %sprite = new sprite()
+        {
+            class = %this.spriteClass;
+            superClass = ImageAssetPreviewSprite;
+            scene = %scene;
+            UseInputEvents = true;
+            window = %this;
+            tooltipprofile="GuiToolTipProfile";
+            ToolTip="Each frame is displayed in order from left to right starting in the top left corner. You can drag and drop individual frames to the Animation Timeline.";
+        };
      
-     %sprite.setImageAsset(%this.assetId, %i);
-     %sprite.setPosition(%posX, %posY);
-     %sprite.setSize(%objWidth, %objHeight);
+        %sprite.setImageAsset(%this.assetId, %i);
+        %sprite.setPosition(%posX, %posY);
+        %sprite.setSize(%objWidth, %objHeight);
      
-     %this.staticSpriteGroup.add(%sprite);
+        %this.staticSpriteGroup.add(%sprite);
      
-     if (%colCount >= %div - 1)
-     {
-        %rowCount++;
-        %colCount = 0;
-        %posX = %baseX - (%maxWidth / 2) + (%objWidth / 2);
-        %posY = %baseY - (%maxHeight / 2) + (%objHeight / 2) + ((%objHeight + %rowSpace + %this.spacing) * %rowCount);
-     }
-     else
-     {
-        %colCount++;
-        %posX = %baseX - (%maxWidth / 2) + (%objWidth / 2) + ((%objWidth + %colSpace + %this.spacing) * %colCount);
-     }
-  }
+        if (%colCount >= %div - 1)
+        {
+            %rowCount++;
+            %colCount = 0;
+            %posX = %baseX - (%maxWidth / 2) + (%objWidth / 2);
+            %posY = %baseY - (%maxHeight / 2) + (%objHeight / 2) + ((%objHeight + %rowSpace + %this.spacing) * %rowCount);
+        }
+        else
+        {
+            %colCount++;
+            %posX = %baseX - (%maxWidth / 2) + (%objWidth / 2) + ((%objWidth + %colSpace + %this.spacing) * %colCount);
+        }
+    }
 }
 
 /// void()
 /// Updates the camera size to display images at the correct aspect ratio.
 function ImageAssetPreviewWindow::updateSize(%this)
 {
-   if(!isObject(%this.imageAsset))
-      return;
+    if (!isObject(%this.imageAsset))
+        return;
    
-   // Grab some size info.
-   %windowSize = %this.getExtent();
-   %imageSize = %this.imageAsset.getImageSize();
-      
-   %windowAR = getWord(%windowSize, 0) /  getWord(%windowSize, 1);
-   %imageAR = getWord(%imageSize, 0) / getWord(%imageSize, 1);
-      
-   // Basically, instead of sizing the images correctly, we're sizing the
-   // camera at the inverse of the image's aspect ratio, thereby achieving the
-   // same affect.
-   %newSize = resolveAspectRatio(%windowAR / %imageAR, %this.baseDimension);
-   %this.setCurrentCameraPosition("0 0", %newSize);
+    // Grab some size info.
+    %windowSize = %this.getExtent();
+    %imageSize = %this.imageAsset.getImageSize();
+
+    %windowAR = getWord(%windowSize, 0) /  getWord(%windowSize, 1);
+    %imageAR = getWord(%imageSize, 0) / getWord(%imageSize, 1);
+
+    // Basically, instead of sizing the images correctly, we're sizing the
+    // camera at the inverse of the image's aspect ratio, thereby achieving the
+    // same affect.
+    %newSize = resolveAspectRatio(%windowAR / %imageAR, %this.baseDimension);
+    %this.setCurrentCameraPosition("0 0", %newSize);
 }

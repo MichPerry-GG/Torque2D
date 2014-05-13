@@ -30,7 +30,7 @@ function TagDropdownList::refresh(%this, %useAnyTag, %excludes)
         
     %tagCount = %assetTagsManifest.getTagCount();
 
-    for(%i = 0; %i < %tagCount; %i++)
+    for (%i = 0; %i < %tagCount; %i++)
     {
         %tag = %assetTagsManifest.getTag(%i);
 
@@ -38,15 +38,15 @@ function TagDropdownList::refresh(%this, %useAnyTag, %excludes)
         %isExcluded = -1;
 
         // If %excluded actually contained tags, search it for the current tag
-        if(%excludes !$= "")
+        if (%excludes !$= "")
             %isExcluded = strstr(%excludes, %tag);
 
         // If there was a valid tag and it was not in the %excludes list
-        if(%tag !$= "" && %isExcluded == -1)
+        if (%tag !$= "" && %isExcluded == -1)
             %this.add(%tag, %i);
     }
 
-    if(%useAnyTag)
+    if (%useAnyTag)
     {
         %this.add("Any", %i++);
         %this.setSelected(%i);

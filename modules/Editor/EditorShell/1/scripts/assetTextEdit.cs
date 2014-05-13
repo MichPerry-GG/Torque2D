@@ -61,10 +61,12 @@ function AssetTextEdit::onKeyPressed(%this)
     %this.cursorPos = %this.getCursorPos();
     %filtered = %this.filterText();
     %this.update();
+    
     if (%filtered)
         %this.setCursorPos(%this.cursorPos - 1);
     else
         %this.setCursorPos(%this.cursorPos);
+    
     %this.updateGui();
 } 
 
@@ -88,7 +90,7 @@ function AssetTextEdit::filterText(%this)
 /// </summary>
 function AssetTextEdit::updateGui(%this)
 {
-    if ( %this.dependentControl !$= "" )
+    if (%this.dependentControl !$= "")
         %this.dependentControl.update(); 
 }
 
@@ -115,6 +117,7 @@ function AssetTextEdit::onMouseDown(%this, %modifier, %globalPoint, %mouseClickC
 {
     if (%this.getText() $= %this.emptyString)
         %this.text = "";
+        
     %this.update();
     %this.selectAllText();
 }

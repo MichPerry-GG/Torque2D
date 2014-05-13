@@ -40,13 +40,16 @@ function ConfirmOverwriteGui::display(%this, %message, %caller, %callback, %data
 function OverwriteOKBtn::onClick(%this)
 {
     %object = ConfirmOverwriteGui.object;
+    
     if (%object.isMethod(ConfirmOverwriteGui.handler))
     {
         %argCount = getWordCount(ConfirmOverwriteGui.data);
+        
         for (%i = 0; %i < %argCount; %i++)
         {
             %argList[%i] = getWord(ConfirmOverwriteGui.data, %i);
         }
+
         switch(%argCount)
         {
             case 0:
@@ -69,6 +72,7 @@ function OverwriteOKBtn::onClick(%this)
                 %object.call(ConfirmOverwriteGui.handler, %argList[0], %argList[1], %argList[2], %argList[3], %argList[4], %argList[5], %argList[6], %argList[7]);
         }
     }
+    
     ConfirmOverwriteGui.object = "";
     ConfirmOverwriteGui.handler = "";
     ConfirmOverwriteGui.data = "";

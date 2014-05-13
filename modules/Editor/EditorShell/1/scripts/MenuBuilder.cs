@@ -105,10 +105,10 @@
 // if %item is provided, then we update %item[#].
 function MenuBuilder::addItem(%this, %pos, %item)
 {
-    if(%item $= "")
+    if (%item $= "")
         %item = %this.item[%pos];
 
-    if(%item !$= %this.item[%pos])
+    if (%item !$= %this.item[%pos])
         %this.item[%pos] = %item;
 
     %name = getField(%item, 0);
@@ -116,7 +116,7 @@ function MenuBuilder::addItem(%this, %pos, %item)
     %cmd = getField(%item, 2);
 
     // If %accel is an object, we want to add a sub menu
-    if(isObject(%accel))
+    if (isObject(%accel))
         %this.insertSubmenu(%pos, %name, %accel);
     else
         %this.insertItem(%pos, %name !$= "-" ? %name : "", %accel);    
@@ -126,7 +126,7 @@ function MenuBuilder::addItem(%this, %pos, %item)
 
 function MenuBuilder::onAdd(%this)
 {
-    for(%i = 0; %this.item[%i] !$= ""; %i++)
+    for (%i = 0; %this.item[%i] !$= ""; %i++)
     {
         %this.addItem(%i);
 
@@ -143,7 +143,7 @@ function MenuBuilder::onAdd(%this)
 
 function MenuBuilder::onRemove(%this)
 {
-    for(%i = 0; %this.item[%i] !$= ""; %i++)
+    for (%i = 0; %this.item[%i] !$= ""; %i++)
     {
         %name = getField(%this.item[%i], 0);
         %accel = getField(%this.item[%i], 1);
@@ -159,7 +159,7 @@ function MenuBuilder::onRemove(%this)
 function MenuBuilder::onSelectItem(%this, %id, %text)
 {
     %cmd = getField(%this.item[%id], 2);
-    if(%cmd !$= "")
+    if (%cmd !$= "")
     {
         eval( %cmd );
         return true;
@@ -180,7 +180,7 @@ function MenuBuilder::attachToMenuBar(%this)
         return false;
     }
 
-    for(%i = 0; %this.item[%i] !$= ""; %i++)
+    for (%i = 0; %this.item[%i] !$= ""; %i++)
     {
         %name = getField(%this.item[%i], 0);
         %accel = getField(%this.item[%i], 1);
@@ -199,7 +199,7 @@ function MenuBuilder::attachToMenuBar(%this)
 ///
 function MenuBuilder::removeFromMenuBar( %this )
 {   
-    for(%i = 0; %this.item[%i] !$= ""; %i++)
+    for (%i = 0; %this.item[%i] !$= ""; %i++)
     {
         %name = getField(%this.item[%i], 0);
         %accel = getField(%this.item[%i], 1);
